@@ -1,1 +1,1 @@
-GET http://localhost:3003/api/echo/topo/burnaby_mountain
+GET http://localhost:3003/images/burnaby_mountain.png
