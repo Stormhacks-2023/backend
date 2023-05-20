@@ -4,6 +4,7 @@ const app = express()
 const cors = require('cors')
 
 const examplesRouter = require('./controllers/examples')
+const echoRouter=require('./controllers/echo')
 
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
@@ -21,6 +22,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/examples', examplesRouter)
+app.use('/api/echo',echoRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "cross-env node index.js",
     "dev": "cross-env nodemon index.js",
+    "macdev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
