@@ -1,0 +1,8 @@
+POST http://localhost:3003/api/examples 
+Content-Type: application/json
+
+{
+    "id": "12345",
+    "some_attribute": "abcde",
+    "some_other_attribute": 666
+}

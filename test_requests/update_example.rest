@@ -1,0 +1,8 @@
+PUT http://localhost:3003/api/examples/64670a847d7e8ca4ea8b5205
+Content-Type: application/json
+
+{
+    "id": "77777",
+    "some_attribute": "ggggg",
+    "some_other_attribute": 404
+}
