@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/ratings
+Content-Type: application/json
+
+{
+    "mountain": "burnaby_mountain",
+    "name": "John Doe",
+    "text": "Burnaby mountain is beautiful.",
+    "score": 10
+}

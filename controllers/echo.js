@@ -1,50 +1,60 @@
-const fs = require('fs')
-const png = require("upng-js")
-const echoRouter = require('express').Router()
-const config=require('../utils/config')
-echoRouter.get('/', async(request, response)=>{
+import express from 'express'
+import { API_KEY, SEC_KEY } from '../utils/config.js'
+const echoRouter = express.Router()
+
+echoRouter.get('/', async (request, response) => {
     var echoDB;
-    const iframestr='https://api.echo3D.com/webar?secKey=Izkby9ofQngS4y0HofpxZOAJ&key=wandering-tooth-7184&entry='
+    const iframestr = 'https://api.echo3D.com/webar?secKey=Izkby9ofQngS4y0HofpxZOAJ&key=wandering-tooth-7184&entry='
     // Query echo3D
-    fetch('https://api.echo3D.com/query?secKey='+config.SEC_KEY+'&key=' + config.API_KEY)
-    .then((response) => response.json())
-    .then((json) => {
-    // Store database
-    response.status(200).send(Object.keys(json.db))
-    })
-    .catch((error) => {
-    console.error('here',error);
-    });
-    response.status(404).send('Notworking')
+    fetch('https://api.echo3D.com/query?secKey=' + SEC_KEY + '&key=' + API_KEY)
+        .then((res) => res.json())
+        .then((json) => {
+            // Store database
+            response.status(200).json(json.db)
+        })
+        .catch((error) => {
+            console.error('here', error);
+            response.status(404).send('Notworking')
+        });
+
 })
 
-echoRouter.get(('/search/:name'),async(req,res)=>{
-    const name=req.params.name
-    const searchlink='https://api.echo3D.com/search?secKey=Izkby9ofQngS4y0HofpxZOAJ&key=wandering-tooth-7184&keywords='+name
-    const response= await fetch(searchlink)
-    console.log(response)
-    const found =response.find(pic=>{
-        if(pic.source==='poly'){
+echoRouter.get(('/search/:name'), async (req, res) => {
+    const name = req.params.name
+    const searchlink = 'https://api.echo3D.com/search?secKey=Izkby9ofQngS4y0HofpxZOAJ&key=wandering-tooth-7184&keywords=' + name
+    const response = await fetch(searchlink)
+    const newtry = await response.clone().json()
+    const found = newtry.find(pic => {
+        if (pic.source === 'poly') {
             return pic
         }
     })
-    console.log(found)
+    const answer = await fetch('https://api.echo3D.com/upload', {
+        Method: 'POST',
+        Headers: {
+            Accept: 'application.json',
+            'Content-Type': 'application/json'
+        },
+        Body: {
+            type: 'search',
+            source: 'poly',
+            bin_url: found.gltf_bin_url,
+            gltf_url: found.gltf_location_url,
+            thumbnail: found.thumbnail,
+            png_url: found.thumbnail,
+            png_path: found.thumbnail,
+            name: found.name,
+            email: 'jsdhanoa@sfu.ca',
+            key: API_KEY,
+            secKey: SEC_KEY
+
+        },
+        Cache: 'default'
+    })
+    // const second =await answer.clone().json()
+    console.log(answer)
 
 
 })
 
-echoRouter.get('/topo/:id', async(request, response)=>{
-    mountain_name = request.params.id
-    topo_path = "./public/images/" + mountain_name + ".png"
-    try {
-        mountain_topo_raw = await fs.promises.readFile(topo_path, 'utf-8', {})
-        mountain_topo = mountain_topo_raw
-        console.log("Topo found!")
-        response.setHeader('content-type', 'image/png').status(201).json(mountain_topo)
-    } catch (err) {
-        console.log(err)
-        response.status(404)
-    }
-})
-
-module.exports = echoRouter
+export default echoRouter

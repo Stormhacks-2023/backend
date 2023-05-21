@@ -1,11 +1,11 @@
-const mongoose = require('mongoose')
+import { Schema, model } from 'mongoose'
 
-const exampleSchema = new mongoose.Schema({
+const exampleSchema = new Schema({
   id: String,
   some_attribute: String,
   some_other_attribute: Number,
   nlist: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'otherObject'
   }
 })
@@ -18,4 +18,4 @@ exampleSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Example', exampleSchema)
+export default model('Example', exampleSchema)

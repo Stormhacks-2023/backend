@@ -1,31 +1,33 @@
-const config = require('./utils/config')
-const express = require('express')
+import { MONGODB_URI } from './utils/config.js'
+import express from 'express'
 const app = express()
-const cors = require('cors')
+import cors from 'cors'
 
-const examplesRouter = require('./controllers/examples')
-const echoRouter=require('./controllers/echo')
+import examplesRouter from './controllers/examples.js'
+import echoRouter from './controllers/echo.js'
+import animalsRouter from './controllers/animals.js'
+import infosRouter from './controllers/infos.js'
+import ratingsRouter from './controllers/ratings.js'
+import artsRouter from './controllers/art.js'
 
-const middleware = require('./utils/middleware')
-const logger = require('./utils/logger')
-const mongoose = require('mongoose')
+import { connect } from 'mongoose'
 
-logger.info('connecting to', config.MONGODB_URI)
+console.log('connecting to', MONGODB_URI)
 
-mongoose.connect(config.MONGODB_URI)
-    .then(() => { logger.info('connected to', config.MONGODB_URI) })
-    .catch(error => { logger.error('error connecting to MongoDB:', error.message) })
+connect(MONGODB_URI)
+    .then(() => { console.log('connected to', MONGODB_URI) })
+    .catch(error => { console.log('error connecting to MongoDB:', error.message) })
 
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.static('public'))
 app.use(express.json())
-app.use(middleware.requestLogger)
 
 app.use('/api/examples', examplesRouter)
-app.use('/api/echo',echoRouter)
+app.use('/api/echo', echoRouter)
+app.use('/api/animals', animalsRouter)
+app.use('/api/infos', infosRouter)
+app.use('/api/ratings', ratingsRouter)
+app.use('/api/arts', artsRouter)
 
-app.use(middleware.unknownEndpoint)
-app.use(middleware.errorHandler)
-
-module.exports = app
+export default app
